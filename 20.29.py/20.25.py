@@ -30,27 +30,34 @@
 
 
 
-#створити клас декс. В когструкторі приймає гідність від 2 до 10, інше вважаєтся помилкою. 
+#створити клас декс. В когструкторі приймає ранк від 2 до 10, інше вважаєтся помилкою. 
 # Сгенерувати масив карт в памяті та створити метоти тусуємо,  колода на екран, видача карт
 #це повинно повертати двовимірний масив 1 вимір гравець а 2 карта
-
 
 import random
 
 class Deck:
-    def __init__(self, players):
-        if players < 2 or players > 10:
-            raise ValueError("Кількість гравців повинна бути від 2 до 10")
-        self.players = players
-        self.suits = ["Піка", "Черви", "Бубни", "Хрести"]
+    def __init__(self):
+        self.suits = ["♠️", "♥️", "♦️", "♣️"]
         self.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-        self.deck = [rank + " " + suit for suit in self.suits for rank in self.ranks]
+        self.ranks
+        self.cards = []
+        i = 0
+        while i < len(self.suits):
+            j = 0
+            while j < len(self.ranks):
+                self.cards.append( self.suits[i]+ "  " +self.ranks[j] )
+                j = j + 1
+            i = i + 1
+        #self.deck = [rank + " " + suit for suit in self.suits for rank in self.ranks]
+    def print(self):
 
-    def shuffle(self):
-        random.shuffle(self.deck)
+        print(self.cards)
 
-    def show_deck(self):
-        print(self.deck)
+
+    def shuffle(self):# тасуємо колоду
+      random.shuffle(self.cards)
+      
 
     def deal(self, cards_per_player):
         if cards_per_player * self.players > len(self.deck):
@@ -66,8 +73,12 @@ class Deck:
 
 
 # Приклад використання
-deck = Deck(4)        # створюємо колоду для 4 гравців
-deck.shuffle()        # тасуємо
-deck.show_deck()      # показуємо колоду
-hands = deck.deal(5)  # роздаємо по 5 карт кожному гравцю
-print(hands)          # друкуємо 2D масив: [гравець][карти]
+deck = Deck()   # створюємо колоду для 4 гравців
+deck.print()  
+deck.shuffle() 
+deck.print() 
+     # показуємо колоду   
+#deck.shuffle()        # тасуємо
+#deck.show_deck()      # показуємо колоду
+#hands = deck.deal(5)  # роздаємо по 5 карт кожному гравцю
+#print(hands)          # друкуємо 2D масив: [гравець][карти]
