@@ -1,0 +1,38 @@
+# Т17.4
+# Декоратор для перевірки, чи всі аргументи є рядками
+def strings_only(func):
+    def wrapper(*args, **kwargs):
+        # Перевірка всіх позиційних аргументів
+        for arg in args:
+            if not isinstance(arg, str):
+                raise TypeError("Всі позиційні аргументи мають бути рядками")
+        # Перевірка всіх іменованих аргументів
+        for value in kwargs.values():
+            if not isinstance(value, str):
+                raise TypeError("Всі іменовані аргументи мають бути рядками")
+        # Якщо всі аргументи рядки — викликаємо оригінальну функцію
+        return func(*args, **kwargs)
+    return wrapper
+
+
+# Функція, яка повертає список унікальних рядків у порядку введення
+@strings_only  # застосовуємо декоратор strings_only
+def unique_strings(*lines):
+    seen = set()      # множина для відстеження вже зустрінутих рядків
+    result = []       # список результату
+    for line in lines:
+        if line not in seen:  # якщо рядка ще не було
+            seen.add(line)    # додаємо його в множину
+            result.append(line)  # і в результат
+    return result
+
+
+# Перевірка роботи
+if __name__ == "__main__":
+    print(unique_strings("apple", "banana", "apple", "orange"))
+    # ['apple', 'banana', 'orange']  — унікальні рядки у тому порядку, як вони подані
+
+    # Викличе помилку, бо 123 не є рядком
+    # print(unique_strings("apple", 123, "banana"))
+
+
