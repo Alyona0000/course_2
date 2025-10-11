@@ -44,7 +44,3 @@ if suit_code not in suits or not (2 <= rank_code <= 14):
 rank = ranks.get(rank_code, str(rank_code))
 suit = suits[suit_code]
 
-print(f"Масть: {suit}, Ранг: {rank}")
-
-
-# обороботать неверние значение 134,414,101,201,-38,привет.
