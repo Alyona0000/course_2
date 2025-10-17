@@ -13,42 +13,37 @@ def play_craps():
     print("Гра 'Крап' починається!")
     print("--------------------------")
 
-    first_throw = roll_two_dice()
+    """     first_throw = roll_two_dice()
     print("Перший кидок:", first_throw)
 
-    # Перевіряємо умови миттєвої перемоги або поразки
-    if first_throw == 7 or first_throw == 11:
-        print("Ви виграли одразу! (7 або 11)")
-        return True
-
-    if first_throw == 2 or first_throw == 3 or first_throw == 12:
-        print("Ви програли одразу! (2, 3 або 12)")
-        return False
 
     # Інакше встановлюємо "ваше число"
     point = first_throw
     print("Ваше число (point):", point)
-    print("Кидайте далі, доки не випаде", point, "або 7.")
+    print("Кидайте далі, доки не випаде число з правил.")
     print("Щоб зробити кидок, натисніть 0 і Enter.\n")
-
+ """
     # Цикл подальших кидків
     while True:
-        move = input("Ваш хід (0 - кинути кубики): ")
+        
+       # move = input("Ваш хід (0 - кинути кубики): ")
 
-        if move != "0":
-            print("Помилка: введіть 0, щоб кинути кубики.")
-            continue
+        #if move != "0":
+         #   print("Помилка: введіть 0, щоб кинути кубики.")
+          #1
+          #  continue
 
-        throw = roll_two_dice()
+        first_throw = roll_two_dice()
 
-        if throw == point:
-            print("Випало ваше число! Ви виграли!")
+        # Перевіряємо умови миттєвої перемоги або поразки
+        if first_throw == 7 or first_throw == 11:
+            print("Ви виграли! (7 або 11)")
             return True
 
-        if throw == 7:
-            print("Випало 7. Ви програли.")
+        if first_throw == 2 or first_throw == 3 or first_throw == 12:
+            print("Ви програли! (2, 3 або 12)")
             return False
-
+        
         print("Кидаємо далі...\n")
 
 
@@ -59,7 +54,7 @@ def simulate(n):
 
     while i < n:
         result = play_craps()
-        if result == True:
+        if result :
             wins = wins + 1
         i = i + 1
 
@@ -68,7 +63,6 @@ def simulate(n):
     print("Кількість ігор:", n)
     print("Кількість виграшів:", wins)
     print("Ймовірність виграшу:", round(win_rate, 4))
-
 
 # --- Основна частина програми ---
 print("Виберіть режим:")
