@@ -3,9 +3,9 @@ import numpy as np
 
 def roll_two_dice(n=1):
     """Функція для кидання двох кубиків n разів"""
-    cube1 = np.random.randint(1, 7, size=n)
+    cube1 = np.random.randint(1, 7, size=n)# сторення значень першого вектора,
     cube2 = np.random.randint(1, 7, size=n)
-    s = cube1 + cube2
+    s = cube1 + cube2   
 
     if n == 1:
         print(f"Випало: {cube1[0]} і {cube2[0]} => сума: {s[0]}")
@@ -46,34 +46,63 @@ def play_craps():
         elif throw == 7:
             print("Ви програли! (випала 7)")
             return False
-
+""" 
 
 def simulate(n):
-    """Симуляція n ігор (без інтерфейсу)"""
+    Симуляція n ігор (без інтерфейсу)
     # Перші кидки для всіх ігор
     first_throw = roll_two_dice(n)
+
 
     # Миттєві виграші та поразки
     wins = (first_throw == 7) | (first_throw == 11)
     losses = (first_throw == 2) | (first_throw == 3) | (first_throw == 12)
 
     # Ігри, що продовжуються
-    ongoing = ~(wins | losses)
+    ongoing = (wins | losses)
     points = first_throw[ongoing]
 
     # Моделюємо подальші кидки для тих, у кого є point
     for i, point in enumerate(points):
         while True:
-            throw = np.random.randint(2, 13)
+            throw = np.random.randint(1, 13)
             if throw == point:
                 wins[ongoing.nonzero()[0][i]] = True
                 break
             elif throw == 7:
                 losses[ongoing.nonzero()[0][i]] = True
                 break
+ """
+def simulate_2(n):
+    while n > 0:
+        throw = roll_two_dice(n)  
+        win = (throw == 7) | (throw == 11)
+        los = (throw == 2) | (throw == 3) | (throw == 12)
+        w = win
+        l = los
+        n = n - (l+w)
+
+        
+        win_mask = (throw == 7) | (throw == 11)
+        lose_mask = (throw == 2) | (throw == 3) | (throw == 12)
+        print("win_mask:", win_mask)
+        print("lose_mask:", lose_mask)
+        print("length:", len(throw))
+
+        # додаємо до загальних результатів
+        wins = np.append(wins, active[win_mask])
+        losses = np.append(losses, active[lose_mask])
+
+        # залишаються ті, хто ще грає
+        still_playing = ~(win_mask | lose_mask)
+        active = active[still_playing]
+
+        print("Ще грають:", len(active))
+        print("-----")
+
 
     # Підрахунок результатів
-    total_wins = np.sum(wins)
+    total_wins = np.sum(win)
     win_rate = total_wins / n
 
     print("--------------------------")
@@ -104,39 +133,12 @@ def main():
             print("Помилка: кількість ігор має бути додатною!")
             return
 
-        simulate(n)
+        simulate_2(n)
     else:
         print("Помилка: потрібно вибрати 1 або 2.")
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
