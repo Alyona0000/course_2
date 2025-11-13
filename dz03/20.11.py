@@ -11,8 +11,8 @@ def is_magic_square(matrix):
     if n != m:
         return False  # Не квадратна матриця
 
-    target_sum = np.sum(matrix[0, :])
-    row_sums = np.sum(matrix, axis=1)
+    target_sum = np.sum(matrix[0, :]) #  15
+    row_sums = np.sum(matrix, axis=1) #  [7, 9, 5]
     col_sums = np.sum(matrix, axis=0)
 
     if not (np.all(row_sums == target_sum) and np.all(col_sums == target_sum)):
@@ -42,3 +42,5 @@ if __name__ == "__main__":
         [7, 8, 9]
     ])
     print("Магічний квадрат:" if is_magic_square(mat2) else "Не магічний квадрат")
+
+

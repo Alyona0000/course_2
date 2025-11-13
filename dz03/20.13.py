@@ -13,27 +13,27 @@ import numpy as np
 
 def distance(p1, p2):
     """Векторизована функція для обчислення відстані між двома точками."""
-    return np.sqrt(np.sum((p1 - p2) ** 2, axis=-1))
+    return np.sqrt(np.sum((p1 - p2) ** 2, axis=-1)) #відстань
 
-def find_farthest_points(points):
+def find_farthest_points(points):# це двовимірний масив 2xn
     """
     points: 2 x n numpy array, де points[0] - x, points[1] - y
     Повертає (i, j, max_dist): індекси точок та максимальна відстань
     """
     n = points.shape[1]
-    # Індекси всіх пар (верхній трикутник, щоб не дублювати)
-    idx1, idx2 = np.triu_indices(n, k=1)
+    
+    idx1, idx2 = np.triu_indices(n, k=1) # це два одномірні масиви індексів
 
-    # Формуємо 3D масив пар точок: (кількість_пар, 2 точки, 2 координати)
-    pairs = np.stack([points[:, idx1].T, points[:, idx2].T], axis=1)
+    #(кількість_пар, 2 точки, 2 координати)
+    pairs = np.stack([points[:, idx1].T, points[:, idx2].T], axis=1) # це тривимірний масив
     # pairs.shape == (num_pairs, 2, 2)
 
-    # Обчислюємо відстані для всіх пар
-    dists = distance(pairs[:,0,:], pairs[:,1,:])
+    # Обчислюємо відстані для всіх пар точок(distance - векторизована функція)
+    dists = distance(pairs[:,0,:], pairs[:,1,:]) # це одномірний масив відстаней
 
     # Знаходимо найбільшу
-    max_idx = np.argmax(dists)
-    i, j = idx1[max_idx], idx2[max_idx]
+    max_idx = np.argmax(dists) 
+    i, j = idx1[max_idx], idx2[max_idx] 
 
     return i, j, dists[max_idx], pairs
 
