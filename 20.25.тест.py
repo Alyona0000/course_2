@@ -51,6 +51,7 @@ class Decks:
             dealt.append(player_cards)
             # Додаємо карти поточного гравця в список
 
+            #displaying_cards = 
             print(f"Гравець {i+1} отримав:", player_cards)
             # Виводимо карти, отримані гравцем
 
@@ -64,8 +65,15 @@ class Decks:
 # Приклад використання:
 d = Decks(num_decks=1, min_rank=7)  # 3 колоди, карти від 6 до туза
 print("Кількість карт у колоді:", len(d.cards))  # Виводимо кількість карт
-d.deal(num_players=4, num_cards=5)  # Роздаємо по 5 карт 4 гравцям
+hand = d.deal(num_players=4, num_cards=5)  # Роздаємо по 5 карт 4 гравцям
+#print(displaying_cards)
+#print(d.deal)
 
+print("\nКарти гравців:")
+for i, player in enumerate(hand, start=1):
+    print(f"Гравець {i}:")
+    for deck_index, cards_from_deck in enumerate(player, start=1):
+        print(f"  З колоди {deck_index}: {cards_from_deck}")
 
 
 
