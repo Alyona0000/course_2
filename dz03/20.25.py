@@ -81,16 +81,16 @@ class Decks:
 # таких как физика, экономика и управление проектами.
 
 def case_1 (hand_numbers):    
-    suits = hand_numbers // 100     # масть карти
+    rangs = hand_numbers % 100     # масть карти
     # Перевірка на "каре" (4 карти одного рангу)
-    uniq_values, counts = np.unique(suits, return_counts=True)
+    uniq_values, counts = np.unique(rangs, return_counts=True)
     return np.any(counts == 4)
 
 
 
 
 # Приклад використання:
-d = Decks(num_decks=10000, min_rank=7)  # 3 колоди, карти від 7 до туза
+d = Decks(num_decks=100, min_rank=7)  # 3 колоди, карти від 7 до туза
 print("Кількість колод:", len(d.all_decks))  # Виводимо кількість колод
 
 hands = d.deal(num_players=4, num_cards=5)  # Роздаємо по 5 карт кожному гравцю з кожної колоди
@@ -103,7 +103,7 @@ for i, player in enumerate(hands, start=1):
     print(f"Гравець {i}:")
     for deck_index, cards_from_deck in enumerate(player, start=1):
         c_1= case_1(cards_from_deck)
-        print(f"  З колоди {deck_index}: {d.set_to_string(cards_from_deck)},  {c_1}")
+       # print(f"  З колоди {deck_index}: {d.set_to_string(cards_from_deck)},  {c_1}")
         case_1_resold.append(c_1)
 
 
