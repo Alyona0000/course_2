@@ -81,20 +81,34 @@ class Decks:
 # таких как физика, экономика и управление проектами.
 
 def case_1 (hand_numbers):    
-    rangs = hand_numbers % 100     # масть карти
+    suit = hand_numbers // 100     # масть карти
     # Перевірка на "каре" (4 карти одного рангу)
-    uniq_values, counts = np.unique(rangs, return_counts=True)
+    uniq_values, counts = np.unique(suit, return_counts=True)
     return np.any(counts == 4)
 
-def case_2 (hand_numbers):    
-    suits = hand_numbers // 100     # масть карти
-    # Перевірка на "каре" (4 карти одного рангу)
-    uniq_values, counts = np.unique(suits, return_counts=True)
-    return np.any(counts == 5)
+
+def case_2(hand_numbers):
+    suit = hand_numbers // 100      # визначає масть карти 
+    ranks = hand_numbers % 100      # гідність карт (2–14)
+    
+    # визначаємо 5 карт однієї масті
+    #опрреділяєт унікальні значення та рахує їхню кількість 
+    uniq_values, counts = np.unique(suit, return_counts=True)
+    cond_1 = uniq_values.size == 1 and counts[0] == 5
+    sort = np.sort(hand_numbers)
+    d = [1, 2, 3, 4, 5]
+    c = sort - d
+    uniq_values, counts =np.unique(c, return_counts=True)
+    cond_2 = uniq_values.size == 1 
+    
+   # результат = тру якщо 4 масті рівні, яещо 5 мастей рівні + гдність зростає на 1 
+   # 5 карт мають однакову масть,
+    return cond_1 and cond_2
+
 
 
 # Приклад використання:
-d = Decks(num_decks=100, min_rank=7)  # 3 колоди, карти від 7 до туза
+d = Decks(num_decks=5000, min_rank=7)  # 3 колоди, карти від 7 до туза
 print("Кількість колод:", len(d.all_decks))  # Виводимо кількість колод
 
 hands = d.deal(num_players=4, num_cards=5)  # Роздаємо по 5 карт кожному гравцю з кожної колоди
@@ -104,19 +118,22 @@ print("\nКарти гравців:")
 case_1_resold = []
 case_2_resold = []
 
+
 for i, player in enumerate(hands, start=1):
     print(f"Гравець {i}:")
     for deck_index, cards_from_deck in enumerate(player, start=1):
         c_1= case_1(cards_from_deck)
+        c_2= case_2(cards_from_deck)
        # print(f"  З колоди {deck_index}: {d.set_to_string(cards_from_deck)},  {c_1}")
         case_1_resold.append(c_1)
-
+        case_2_resold.append(c_2)
 
 case_1_resold= np.array(case_1_resold)
+case_2_resold= np.array(case_2_resold)
 print("всього", case_1_resold.size)
 d = case_1_resold[case_1_resold]
 f = case_2_resold[case_2_resold]
 print("кількість випадків коли 4 карти", d.size)
-print("кількість випадків коли 4 карти", f.size)
-print("вирогідність Монте-Карло", d.size/case_1_resold.size)
-print("вирогідність Монте-Карло", f.size/case_2_resold.size)
+print("кількість випадків коли 5 однакових карт", f.size)
+print("вирогідність 1-шого сценарію", d.size/case_1_resold.size)
+print("вирогідність 2-шого сценарію", f.size/case_2_resold.size)
