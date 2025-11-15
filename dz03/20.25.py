@@ -86,7 +86,11 @@ def case_1 (hand_numbers):
     uniq_values, counts = np.unique(rangs, return_counts=True)
     return np.any(counts == 4)
 
-
+def case_2 (hand_numbers):    
+    suits = hand_numbers // 100     # масть карти
+    # Перевірка на "каре" (4 карти одного рангу)
+    uniq_values, counts = np.unique(suits, return_counts=True)
+    return np.any(counts == 5)
 
 
 # Приклад використання:
@@ -98,6 +102,7 @@ hands = d.deal(num_players=4, num_cards=5)  # Роздаємо по 5 карт �
 print("\nКарти гравців:")
 
 case_1_resold = []
+case_2_resold = []
 
 for i, player in enumerate(hands, start=1):
     print(f"Гравець {i}:")
@@ -110,5 +115,8 @@ for i, player in enumerate(hands, start=1):
 case_1_resold= np.array(case_1_resold)
 print("всього", case_1_resold.size)
 d = case_1_resold[case_1_resold]
-print("кількість випадків", d.size)
+f = case_2_resold[case_2_resold]
+print("кількість випадків коли 4 карти", d.size)
+print("кількість випадків коли 4 карти", f.size)
 print("вирогідність Монте-Карло", d.size/case_1_resold.size)
+print("вирогідність Монте-Карло", f.size/case_2_resold.size)
