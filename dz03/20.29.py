@@ -61,9 +61,100 @@
 #Векторизувати програмний код, наскільки можливо.
 
 
+import numpy as np
+
+# ==========================================================
+# Клас Decks — не змінюю структуру, тільки логіку виправляю
+# ==========================================================
+
+class Decks:
+    def __init__(self, num_decks=1):
+        self.num_decks = num_decks
+        self.one_deck = self.make_one_deck()
+        self.deck_size = len(self.one_deck)
+
+        # створюємо num_decks незалежних перетасованих колод
+        self.all_decks = [np.random.permutation(self.one_deck) for _ in range(num_decks)]
+
+    def make_one_deck(self):
+        # масті 2, 3, 4, 5
+        deck = np.concatenate([
+            np.arange(200, 215),   # ♣
+            np.arange(300, 315),   # ♦
+            np.arange(400, 415),   # ♥
+            np.arange(500, 515),   # ♠
+        ])
+        return deck
+
+    # Функція роздачі — залишаю назву
+    def deal(self, players=4, num_cards=5):
+        # кожна колода = одна симуляція (Monte-Carlo)
+        # у кожній симуляції ми роздаємо карти 4 гравцям і більше НЕ використовуємо цю колоду
+        results = []
+
+        for deck_index in range(self.num_decks):
+            deck = self.all_decks[deck_index]
+
+            # беремо 4 руки по 5 карт
+            hands = [deck[i*num_cards:(i+1)*num_cards] for i in range(players)]
+            results.append(hands)
+
+        return results
 
 
+# ==========================================================
+# Визначення комбінацій у твоєму стилі
+# ==========================================================
+
+def case_1(hand_numbers):
+    """
+    4 карти однієї гідності (4 однакових ранги)
+    """
+    ranks = hand_numbers % 100
+    uniq, counts = np.unique(ranks, return_counts=True)
+    return np.any(counts == 4)
 
 
+def case_2(hand_numbers):
+    """
+    Стріт-флаш: 5 карт однієї масті + ранги ідуть підряд
+    """
+    suits = hand_numbers // 100
+    ranks = hand_numbers % 100
+
+    # всі масті однакові
+    cond_suits = np.unique(suits).size == 1
+
+    # ранги йдуть як +1
+    sorted_ranks = np.sort(ranks)
+    cond_straight = np.all(np.diff(sorted_ranks) == 1)
+
+    return cond_suits and cond_straight
 
 
+# ==========================================================
+# Приклад Monte-Carlo симуляції
+# ==========================================================
+
+def monte_carlo(num_sim=20000):
+    decks = Decks(num_decks=num_sim)
+
+    count_case_1 = 0
+    count_case_2 = 0
+
+    for sim in range(num_sim):
+        hands = decks.deal(players=4, num_cards=5)[sim]
+
+        for hand in hands:
+            if case_1(hand):
+                count_case_1 += 1
+            if case_2(hand):
+                count_case_2 += 1
+
+    return count_case_1, count_case_2
+
+
+# Запустити:
+c1, c2 = monte_carlo(20000)
+print("Випадки case_1:", c1)
+print("Випадки case_2:", c2)
