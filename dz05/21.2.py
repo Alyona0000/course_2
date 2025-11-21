@@ -12,7 +12,10 @@ def rozbyty_ta_zberehty(shlyah_do_vkhid: str, shlyah_do_vykhid: str) -> None:
         for r in rechennya:
             f.write(r + '\n')
 
+    print("Готово! Речення записано у файл:", shlyah_do_vykhid)
 
-if __name__ == '__main__':
-    rozbyty_ta_zberehty('vkhid.txt', 'rechennya.txt')
-    print("Готово: речення збережені у файлі rechennya.txt")
+
+rozbyty_ta_zberehty(
+    r"C:\Users\alenk\Repository\Course_2\dz05\vkhid.txt",
+    r"C:\Users\alenk\Repository\Course_2\dz05\rechennya.txt"
+)
