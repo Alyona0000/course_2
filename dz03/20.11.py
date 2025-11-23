@@ -14,6 +14,7 @@ def is_magic_square(matrix):
     target_sum = np.sum(matrix[0, :]) #  15
     row_sums = np.sum(matrix, axis=1) #  [7, 9, 5]
     col_sums = np.sum(matrix, axis=0)
+    s = np.sum(matrix.diagonal())
 
     if not (np.all(row_sums == target_sum) and np.all(col_sums == target_sum)):
         return False

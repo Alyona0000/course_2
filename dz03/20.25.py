@@ -36,7 +36,7 @@ class Decks:
         rank_names = {2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "J", 12: "Q", 13: "K", 14: "A"}
         return f"{suit_names[card // 100]}  {rank_names[card % 100]}"
 
-    def set_to_string(self, set: np.ndarray) -> str:
+    def set_to_string(self, set: np.ndarray) -> str: # преобразует набор карт в строковое представление
         return "  ".join([self.card_to_string(card) for card in set])
     
     def deal(self, num_players, num_cards):
@@ -52,7 +52,7 @@ class Decks:
            # print(f"\nРоздаємо карти з колоди №{deck_index + 1}")
             # Виводимо номер поточної колоди
 
-            if num_players * num_cards > len(deck):
+            if num_players * num_cards > len(deck): # перевірка чи вистачає карт в колоді
                 raise ValueError(f"У колоді №{deck_index + 1} недостатньо карт!")
 
             for i in range(num_players):

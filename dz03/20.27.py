@@ -29,17 +29,19 @@
 #Розв’язати задачу методом Монте-Карло з використанням масивів numpy.
 #Векторизувати програмний код, наскільки можливо.
 
-import numpy as np
+
+
+import numpy as np 
 
 class Decks:
-    def __init__(self, num_decks=3, min_rank=2):
+    def __init__(self, num_decks=1, min_rank=7):
         # Формує вказану кількість колод карт.
         # Аргументи:
         #   num_decks – кількість колод
         #   min_rank – мінімальний ранг карти (2..14), де 11=J, 12=Q, 13=K, 14=A
 
-        if not (2 <= min_rank <= 14):
-            raise ValueError("Мінімальний ранг має бути від 2 до 14")
+        if not (7 <= min_rank <= 14):
+            raise ValueError("Мінімальний ранг має бути від 7 до 14")
         # Перевірка правильності мінімального рангу
 
         suits = np.array([100, 200, 300, 400])
@@ -58,19 +60,14 @@ class Decks:
 
         # Створюємо список незалежних колод (кожна перемішана)
         self.all_decks = [np.random.permutation(one_deck) for _ in range(num_decks)]
-        # Кожна колода існує окремо й має свій порядок карт
 
-
-        # старшенство карт ПИКИ ТРЕФИ БУБНА ЧЕРВА
-        # (саме в такому порядку бо це старшенство карт тобто пики старша карта черви молодша, так само як туз старша карта а 7 моложша)
-        # прикуп --- жто человек которий сидит и раздает карти (тобиш ми на рамдоме раздаем карти а потом чтоби в колоде (масиве осталось 2 карти))
-        # після рздачі карт починається торговля (тобто гравці дивляться на свої 10 карт та оцінюють їх)
+        # Створюємо список незалежних колод (кожна перемішана)
     def card_to_string(self, card: int) -> str:
         suit_names = {1: "♠️", 2: "♥️", 3: "♦️", 4: "♣️"}
-        rank_names = {2: "2", 3: "3", 4: "4", 5: "5", 7: "7", 8: "8", 9: "9", 10: "10", 11: "J", 12: "Q", 13: "K", 14: "A"}
+        rank_names = {7: "7", 8: "8", 9: "9", 10: "10", 11: "J", 12: "Q", 13: "K", 14: "A"}
         return f"{suit_names[card // 100]}  {rank_names[card % 100]}"
 
-    def set_to_string(self, set: np.ndarray) -> str:
+    def set_to_string(self, set: np.ndarray) -> str: # преобразует набор карт в строковое представление
         return "  ".join([self.card_to_string(card) for card in set])
     
     def deal(self, num_players, num_cards):
@@ -81,43 +78,51 @@ class Decks:
         dealt = [[] for _ in range(num_players)]
         # Створюємо список гравців; у кожного буде список карт із кожної колоди
 
-        # Роздача з кожної колоди окремо
+        # Роздача з колоди окремо
         for deck_index, deck in enumerate(self.all_decks):
-           # print(f"\nРоздаємо карти з колоди №{deck_index + 1}")
-            # Виводимо номер поточної колоди
+            print(f"\nРоздаємо карти з колоди №{deck_index + 1}")
+            
 
-            if num_players * num_cards > len(deck):
+            if num_players * num_cards > len(deck): # перевірка чи вистачає карт в колоді
                 raise ValueError(f"У колоді №{deck_index + 1} недостатньо карт!")
 
             for i in range(num_players):
                 player_cards = deck[:num_cards]
                 # Беремо перші num_cards карт із поточної колоди
 
-                deck = deck[num_cards:]
+                deck = deck[num_cards:] # в кінці повинно залишитись 2 карти 
                 # Зменшуємо колоду після роздачі
 
                 dealt[i].append(player_cards)
                 # Додаємо карти з цієї колоди поточному гравцю
-
-                #print(f"  Гравець {i + 1} отримав з колоди {deck_index + 1}: {player_cards}")
+                s = self.set_to_string(player_cards)
+                print(f"  Гравець {i + 1} отримав з колоди {s}")
 
             # Оновлюємо стан колоди після роздачі
             self.all_decks[deck_index] = deck
 
-       # print("\nПісля роздачі залишок карт у кожній колоді:")
-        #for i, deck in enumerate(self.all_decks, start=1):
-            #print(f"  Колода {i}: {len(deck)} карт залишилось")
+        print("\nПісля роздачі залишок карт у кожній колоді:")
+        for i, deck in enumerate(self.all_decks, start=1):
+            print(f"  Колода {i}: {len(deck)} карт залишилось") # повинно бути по 2 карти в кожній колоді
 
         return dealt
         # Повертаємо список: у кожного гравця — масив карт із кожної колоди
 
-# Метод Монте-Карло — это численный метод, использующий случайные числа для решения сложных задач в различных областях,
-# таких как физика, экономика и управление проектами.
+
+    def case_1 (hand_numbers):    
+        suit = hand_numbers // 100     # масть карти
+        # Перевірка на "каре" (4 карти одного рангу)
+        counts = np.unique(suit, return_counts=True)
+        return np.any(counts == 4)
 
 
 
 
 
+# Приклад використання:
+d = Decks(num_decks=1, min_rank=7)  #1 колоди, карти від 7 до туза
+print("Кількість колод:", len(d.all_decks))  # значення кількості колод
 
+hands = d.deal(num_players=3, num_cards=10)  # Роздаємо по 5 карт кожному гравцю з кожної колоди
 
-
+print("\nКарти гравців:")
