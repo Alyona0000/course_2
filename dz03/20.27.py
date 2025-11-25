@@ -96,6 +96,8 @@ class Decks:
                 dealt[i].append(player_cards)
                 # Додаємо карти з цієї колоди поточному гравцю
                 s = self.set_to_string(player_cards)
+                print(case_5(player_cards))
+                
                 print(f"  Гравець {i + 1} отримав з колоди {s}")
 
             # Оновлюємо стан колоди після роздачі
@@ -109,11 +111,37 @@ class Decks:
         # Повертаємо список: у кожного гравця — масив карт із кожної колоди
 
 
-    def case_1 (hand_numbers):    
-        suit = hand_numbers // 100     # масть карти
-        # Перевірка на "каре" (4 карти одного рангу)
-        counts = np.unique(suit, return_counts=True)
-        return np.any(counts == 4)
+
+
+
+def get_cards_by_suit(hand_numbers, suit_index):
+    return hand_numbers[ hand_numbers // 100 == suit_index]
+
+def check_winning_combination(hand_numbers,suit_index):
+    #розрахувати сумарний ранг та кількість карт у розрізі масті
+    dd = get_cards_by_suit(hand_numbers,suit_index)
+    #print(dd)
+    ff_size = np.size(dd)
+    #print(ff_size)
+    rang = np.sum(dd%100)
+    #print(rang)
+    # мінімальний ранг для виграшу 39 для 3 карт туз король дама
+    # індекс в масиві це кількість карт
+    min_rangs = np.array([ 0, 14, 27, 39, 50, 54, 61, 71, 84])
+    min_rang_for_hand = min_rangs[ff_size]
+    #print(min_rang_for_hand)
+    return rang >= min_rang_for_hand
+
+def case_5(hand_numbers):
+    r = np.array([
+        check_winning_combination(hand_numbers,1),
+        check_winning_combination(hand_numbers,2),
+        check_winning_combination(hand_numbers,3),
+        check_winning_combination(hand_numbers,4)
+    ])
+    return np.all(r)
+
+
 
 
 
