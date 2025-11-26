@@ -31,7 +31,7 @@
 
 
 
-import numpy as np 
+import numpy as np, json
 
 class Decks:
     def __init__(self, num_decks=1, min_rank=7):
@@ -80,7 +80,7 @@ class Decks:
 
         # Роздача з колоди окремо
         for deck_index, deck in enumerate(self.all_decks):
-            print(f"\nРоздаємо карти з колоди №{deck_index + 1}")
+            #print(f"\nРоздаємо карти з колоди №{deck_index + 1}")
             
 
             if num_players * num_cards > len(deck): # перевірка чи вистачає карт в колоді
@@ -96,16 +96,14 @@ class Decks:
                 dealt[i].append(player_cards)
                 # Додаємо карти з цієї колоди поточному гравцю
                 s = self.set_to_string(player_cards)
-                print(case_5(player_cards))
-                
-                print(f"  Гравець {i + 1} отримав з колоди {s}")
+               # print(f"  Гравець {i + 1} отримав з колоди {s}")
 
             # Оновлюємо стан колоди після роздачі
             self.all_decks[deck_index] = deck
 
-        print("\nПісля роздачі залишок карт у кожній колоді:")
-        for i, deck in enumerate(self.all_decks, start=1):
-            print(f"  Колода {i}: {len(deck)} карт залишилось") # повинно бути по 2 карти в кожній колоді
+        #print("\nПісля роздачі залишок карт у кожній колоді:")
+        #for i, deck in enumerate(self.all_decks, start=1):
+          #  print(f"  Колода {i}: {len(deck)} карт залишилось") # повинно бути по 2 карти в кожній колоді
 
         return dealt
         # Повертаємо список: у кожного гравця — масив карт із кожної колоди
@@ -117,20 +115,28 @@ class Decks:
 def get_cards_by_suit(hand_numbers, suit_index):
     return hand_numbers[ hand_numbers // 100 == suit_index]
 
+
 def check_winning_combination(hand_numbers,suit_index):
     #розрахувати сумарний ранг та кількість карт у розрізі масті
     dd = get_cards_by_suit(hand_numbers,suit_index)
+    dd = np.sort(dd)[::-1]
     #print(dd)
-    ff_size = np.size(dd)
+    numbers_of_cards = np.size(dd)
     #print(ff_size)
     rang = np.sum(dd%100)
     #print(rang)
     # мінімальний ранг для виграшу 39 для 3 карт туз король дама
     # індекс в масиві це кількість карт
     min_rangs = np.array([ 0, 14, 27, 39, 50, 54, 61, 71, 84])
-    min_rang_for_hand = min_rangs[ff_size]
+    min_rang_for_hand = min_rangs[numbers_of_cards]
+    number_of_top_cards = numbers_of_cards if numbers_of_cards <=4 else 8 - numbers_of_cards
+    rang_top_cards = np.sum(dd[:number_of_top_cards] %100)
+    min_rang_for_top_cards = min_rangs[number_of_top_cards]
+   # print(min_rang_for_top_cards,rang_top_cards,number_of_top_cards,numbers_of_cards)
     #print(min_rang_for_hand)
-    return rang >= min_rang_for_hand
+    return rang >= min_rang_for_hand and  rang_top_cards >= min_rang_for_top_cards
+
+
 
 def case_5(hand_numbers):
     r = np.array([
@@ -143,14 +149,35 @@ def case_5(hand_numbers):
 
 
 
-
-
-
-
 # Приклад використання:
-d = Decks(num_decks=1, min_rank=7)  #1 колоди, карти від 7 до туза
-print("Кількість колод:", len(d.all_decks))  # значення кількості колод
+num_decks= 50000
+num_players = 3
+d = Decks(num_decks, min_rank=7)  #1 колоди, карти від 7 до туза
+#print("Кількість колод:", len(d.all_decks))  # значення кількості колод
 
-hands = d.deal(num_players=3, num_cards=10)  # Роздаємо по 5 карт кожному гравцю з кожної колоди
 
-print("\nКарти гравців:")
+
+hands = d.deal(num_players, num_cards=10)  # Роздаємо по 5 карт кожному гравцю з кожної колоди
+
+#print(json.dumps(hands, indent= 4))
+
+ll=np.array(hands)
+hands = ll.reshape(num_players*num_decks,10)
+
+
+case_5_result =np.array([case_5(player_cards) for player_cards in hands ])
+print(case_5_result)
+
+
+f = case_5_result[case_5_result]
+print("кількість розкладів", case_5_result.size)
+print(f"кількість виграшних розкладів:  {f.size}")
+print("вирогідність сценарію", f.size/case_5_result.size)
+
+print("=============================")
+wins = hands[case_5_result]
+print(wins)
+for w in wins:
+    f = np.sort(np.array(w))[::-1]
+    s = d.set_to_string(f)
+    print(s)
