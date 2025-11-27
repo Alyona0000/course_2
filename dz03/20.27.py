@@ -115,7 +115,6 @@ class Decks:
 def get_cards_by_suit(hand_numbers, suit_index):
     return hand_numbers[ hand_numbers // 100 == suit_index]
 
-
 def check_winning_combination(hand_numbers,suit_index):
     #розрахувати сумарний ранг та кількість карт у розрізі масті
     dd = get_cards_by_suit(hand_numbers,suit_index)
@@ -129,8 +128,8 @@ def check_winning_combination(hand_numbers,suit_index):
     # індекс в масиві це кількість карт
     min_rangs = np.array([ 0, 14, 27, 39, 50, 54, 61, 71, 84])
     min_rang_for_hand = min_rangs[numbers_of_cards]
-    number_of_top_cards = numbers_of_cards if numbers_of_cards <=4 else 8 - numbers_of_cards
-    rang_top_cards = np.sum(dd[:number_of_top_cards] %100)
+    number_of_top_cards = numbers_of_cards if numbers_of_cards <=4 else 8 - numbers_of_cards # визначаємо скільки верхніх карт потрібно для перевірки
+    rang_top_cards = np.sum(dd[:number_of_top_cards] %100) 
     min_rang_for_top_cards = min_rangs[number_of_top_cards]
    # print(min_rang_for_top_cards,rang_top_cards,number_of_top_cards,numbers_of_cards)
     #print(min_rang_for_hand)
@@ -139,15 +138,17 @@ def check_winning_combination(hand_numbers,suit_index):
 
 
 def case_5(hand_numbers):
+    if not np.any(np.bincount(hand_numbers//100)>=4):
+        return False
+    
     r = np.array([
         check_winning_combination(hand_numbers,1),
         check_winning_combination(hand_numbers,2),
         check_winning_combination(hand_numbers,3),
         check_winning_combination(hand_numbers,4)
     ])
+    #print(r)
     return np.all(r)
-
-
 
 # Приклад використання:
 num_decks= 50000
