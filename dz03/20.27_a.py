@@ -173,7 +173,7 @@ print(case_5_result)
 f = case_5_result[case_5_result]
 print("кількість розкладів", case_5_result.size)
 print(f"кількість виграшних розкладів:  {f.size}")
-print("вирогідність сценарію", f.size/case_5_result.size)
+print(f"вирогідність сценарію: {(f.size/case_5_result.size):.8f}")
 
 print("=============================")
 wins = hands[case_5_result]
