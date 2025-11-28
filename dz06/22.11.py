@@ -1,49 +1,99 @@
 import os
+import zipfile
 
-def compare_dirs(dir1, dir2, output_file):
+# ============================================================
+# 1. Створення ОГРОМНОГО файлу
+# ============================================================
+def create_big_single_file(path, size_mb):
+    """Створює великий файл указаного розміру (МБ)."""
+    size_bytes = size_mb * 1024 * 1024
+
+    print(f"Створюємо файл {path} ({size_mb} МБ)...")
+    with open(path, "wb") as f:
+        f.write(os.urandom(size_bytes))
+    print("Файл створено!\n")
+
+
+# ============================================================
+# 2. Створення ZIP-архіву
+# ============================================================
+def make_zip(source_dir, zip_name):
+    """Створює ZIP-архів з каталогу."""
+    print("Створюємо ZIP-архів...")
+
+    with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as z:
+        for root, dirs, files in os.walk(source_dir):
+            for file in files:
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, source_dir)
+                z.write(full_path, rel_path)
+
+    print(f"Архів створено: {zip_name}")
+    return zip_name
+
+
+# ============================================================
+# 3. Розбиття архіву на частини
+# ============================================================
+def split_file(file_path, max_size):
     """
-    Порівнює файли з однаковими іменами у двох каталогах.
-    Якщо розміри відрізняються — записує різницю у текстовий файл.
+    Розбиває файл на частини max_size байт.
+    Частини мають формат:
+        file.zip.0001
+        file.zip.0002
+    """
+    part_num = 1
+
+    print("Починаємо розбиття архіву...")
+
+    with open(file_path, "rb") as f:
+        while True:
+            chunk = f.read(max_size)
+            if not chunk:
+                break
+
+            new_file = f"{file_path}.{part_num:04d}"
+            with open(new_file, "wb") as part:
+                part.write(chunk)
+
+            print(f"Створено частину: {new_file}")
+            part_num += 1
+
+    print("\nРозбиття завершено!\n")
+
+
+# ============================================================
+# 4. Головна функція — все разом
+# ============================================================
+def full_process(folder, huge_file_size_mb, max_part_size_mb):
+    """
+    Створює великий файл → архівує → розбиває.
     """
 
-    # Отримуємо списки файлів
-    files1 = set(os.listdir(dir1))
-    files2 = set(os.listdir(dir2))
+    # 1) Створення великого файлу
+    os.makedirs(folder, exist_ok=True)
+    huge_file_path = os.path.join(folder, "HUGE_TEST.bin")
+    create_big_single_file(huge_file_path, huge_file_size_mb)
 
-    # Спільні файли за іменами
-    common_files = files1 & files2
+    # 2) Створення архіву
+    zip_name = os.path.basename(folder.rstrip("\\/")) + ".zip"
+    zip_path = os.path.join(folder, zip_name)
+    make_zip(folder, zip_path)
 
-    with open(output_file, "w", encoding="utf-8") as out:
-        for fname in sorted(common_files):
-            path1 = os.path.join(dir1, fname)
-            path2 = os.path.join(dir2, fname)
-
-            # Перевіряємо, що елементи — саме файли
-            if os.path.isfile(path1) and os.path.isfile(path2):
-                size1 = os.path.getsize(path1)
-                size2 = os.path.getsize(path2)
-
-                if size1 != size2:
-                    diff = size2 - size1
-                    out.write(
-                        f"{fname}: {size1} байт  →  {size2} байт  (різниця: {diff} байт)\n"
-                    )
-
-    print("Готово! Результат записано у:", output_file)
+    # 3) Розбиття
+    max_part_size_bytes = max_part_size_mb * 1024 * 1024
+    split_file(zip_path, max_part_size_bytes)
 
 
-# ---------------------------------------------------------
-# ПРИКЛАД ЗАПУСКУ ПРОГРАМИ (ти міняєш шляхи на свої)
-# ---------------------------------------------------------
+# ============================================================
+# 5. Запуск
+# ============================================================
 if __name__ == "__main__":
 
-    # Каталоги для порівняння
-    dir_a = r"C:\Users\alenk\Documents\Homework\folder1"
-    dir_b = r"C:\Users\alenk\Documents\Homework\folder2"
+    base = r"C:\Users\alenk\Repository\Course_2\dz06\folder1"
 
-
-
-    # Файл для вихідних даних
-    out_file = "result.txt"
-
-    compare_dirs(dir_a, dir_b, out_file)
+    full_process(
+        folder=base,
+        huge_file_size_mb=200,       # РОЗМІР великого файлу
+        max_part_size_mb=10          # РОЗМІР кожної частини архіву
+    )

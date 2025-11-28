@@ -1,0 +1,12 @@
+Пошук у каталозі: C:\Users\alenk\Repository\Course_2\dz06\folder1
+Маска файлів: *.txt
+Регулярний вираз: .+
+
+Знайдено збігів: 2
+
+Файл: C:\Users\alenk\Repository\Course_2\dz06\folder1\фффф copy.txt
+  Рядок 1: fbewojdo[qwpl]s[lx kouxbdjln .as]
+
+Файл: C:\Users\alenk\Repository\Course_2\dz06\folder1\фффф.txt
+  Рядок 1: fbewojdo[qwpl]s[lx kouxbdjln .as]
+
