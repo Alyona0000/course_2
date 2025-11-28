@@ -1,5 +1,8 @@
 import sympy as sp
 from sympy import sin, cos, exp, ln, sqrt, Function, integrate, diff, limit, summation, product, series
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 # Змінні
 x, y, t, n, k = sp.symbols('x y t n k', real=True)
@@ -147,21 +150,42 @@ print("\n13. Нехай маємо наступну систему ЗДР:\n"
       "   f'(t) = g(t)\n"
       "   g'(t) = −2 f(t)\n")
 
-t_var = sp.symbols('t', real=True)
-F = Function('F')
-G = Function('G')
 
-ode13_general = sp.dsolve([
-    sp.Eq(sp.diff(F(t_var), t_var), G(t_var)),
-    sp.Eq(sp.diff(G(t_var), t_var), -2*F(t_var))
-])
-print("a) Загальний розв’язок системи:", ode13_general)
+# ---- система ----
+t = sp.symbols('t', real=True)
+F = sp.Function('F')
+G = sp.Function('G')
 
-ode13_cauchy = sp.dsolve([
-    sp.Eq(sp.diff(F(t_var), t_var), G(t_var)),
-    sp.Eq(sp.diff(G(t_var), t_var), -2*F(t_var))
-], ics={F(0): 1, G(0): 0})
-print("b) Розв’язок задачі Коші при F(0) = 1, G(0) = 0:", ode13_cauchy)
+# Розв'язок задачі Коші
+sol = sp.dsolve([
+        sp.Eq(sp.diff(F(t), t), G(t)),
+        sp.Eq(sp.diff(G(t), t), -2*F(t))
+    ],
+    ics={F(0): 1, G(0): 0}
+)
+
+F_sol = sp.lambdify(t, sol[0].rhs, 'numpy')
+G_sol = sp.lambdify(t, sol[1].rhs, 'numpy')
+
+# ---- сітка для графіка ----
+t_vals = np.linspace(0, 10, 400)
+
+# ---- побудова ----
+plt.figure(figsize=(10,5))
+plt.plot(t_vals, F_sol(t_vals), label='F(t)', linewidth=2)
+plt.plot(t_vals, G_sol(t_vals), label='G(t)', linewidth=2)
+
+plt.title("Розв’язок задачі Коші системи F'(t)=G(t), G'(t)=-2F(t)")
+plt.xlabel("t")
+plt.ylabel("значення функцій")
+plt.grid(True)
+plt.legend()
+plt.show()
 
 
-#побудувати графік 
+
+
+
+
+
+

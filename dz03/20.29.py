@@ -155,6 +155,6 @@ def monte_carlo(num_sim=20000):
 
 
 # Запустити:
-c1, c2 = monte_carlo(20000)
+c1, c2 = monte_carlo(2000)
 print("Випадки case_1:", c1)
 print("Випадки case_2:", c2)
